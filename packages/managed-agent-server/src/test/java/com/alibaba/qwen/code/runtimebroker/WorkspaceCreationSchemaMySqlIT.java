@@ -44,7 +44,7 @@ class WorkspaceCreationSchemaMySqlIT {
         }
         assertEquals(1, ManagedSchema.schemaVersion(source));
         ManagedSchema.initialize(source);
-        assertEquals(6, ManagedSchema.schemaVersion(source));
+        assertEquals(7, ManagedSchema.schemaVersion(source));
         try (var connection = source.getConnection();
                 var statement = connection.createStatement();
                 var input = ManagedSchema.class.getResourceAsStream(ManagedSchema.RESOURCE)) {
@@ -62,6 +62,7 @@ class WorkspaceCreationSchemaMySqlIT {
             statement.execute(
                     "ALTER TABLE ma_request_receipt DROP CONSTRAINT ck_ma_request_namespace");
             statement.execute("ALTER TABLE ma_request_receipt ADD " + oldCheck);
+            statement.execute("DROP INDEX ix_ma_runtime_session_harness ON ma_runtime_session");
             statement.execute("ALTER TABLE ma_session DROP CONSTRAINT ck_ma_session_approval_selection");
             statement.execute("ALTER TABLE ma_turn DROP CONSTRAINT ck_ma_turn_approval_selection");
             statement.execute("ALTER TABLE ma_session DROP COLUMN selected_approval_mode");
@@ -90,7 +91,7 @@ class WorkspaceCreationSchemaMySqlIT {
         assertEquals(4, ManagedSchema.schemaVersion(source));
         ManagedSchema.initialize(source);
         ManagedSchema.validate(source);
-        assertEquals(6, ManagedSchema.schemaVersion(source));
+        assertEquals(7, ManagedSchema.schemaVersion(source));
         try (var connection = source.getConnection();
                 var statement = connection.createStatement()) {
             receipt(
